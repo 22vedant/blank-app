@@ -1,7 +1,8 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-
+import time
+import matplotlib.pyplot as plt
 # map_data = pd.DataFrame(
 #     np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
 #     columns=['lat', 'lon'])
@@ -49,19 +50,44 @@ st.session_state.name
 #     0.0, 100.0, (25.0, 75.0)
 # )
 
-with st.form("my_form"):
-    # st.write("Inside the form")
+with st.form("gst_form"):
     st.title("GST CALCULATOR")
-    # inside_text = st.text_input("")
-    a = st.slider('Select amount', 0, 100000);
-    # b = st.slider('Select interest rate');
-    option = st.selectbox(
+    amount = st.slider('Select amount (₹)', 0, 100000, step=500);
+    tax_slab = st.selectbox(
         "Tax Slab",
         (0.25, 3, 5, 12, 18, 28)
     )
     submitted = st.form_submit_button("Submit")
     if submitted:
-        gst = (a * option) / 100
-        st.write("GST Amount is", gst )
-        st.write("Final Price", a + gst)
+        gst = (amount * tax_slab) / 100
+        final = gst + amount
+        with st.spinner("Calculating...", show_time=True):
+            time.sleep(3)
+        st.success("Calculation Complete!")
+        
+        
+        st.write(f"**GST Amount:** ₹{gst:,.2f}")
+        st.write(f"**Final Price:** ₹{final :,.2f}")
+        
 
+if st.button("Click Me"):
+    st.toast("You have clicked the button!", icon="😈")
+    time.sleep(1)
+    st.toast("After one second", icon="😈")
+
+plt.style.use("dark_background")
+
+st.title("Plot example")
+
+x_values = [1,2,3,4,5]
+y_values = [2,3,5,7,11]
+
+fig,ax = plt.subplots()
+
+ax.scatter(x_values,y_values, color="blue")
+ax.set_xlabel("X Values")
+ax.set_ylabel("Y Values")
+
+ax.set_title("Simple Plot example")
+
+st.pyplot(fig)
